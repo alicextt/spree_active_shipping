@@ -12,5 +12,6 @@ group :development, :test do
   gem 'yarjuf'
   gem 'require_all'
   gem 'awesome_print'
+  gem 'rspec', '~> 2.99'
 end
 
