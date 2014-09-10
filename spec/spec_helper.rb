@@ -1,11 +1,25 @@
+if ENV["COVERAGE"]
+  require_relative 'rcov_exclude_list.rb'
+  exlist = Dir.glob(@exclude_list)
+  require 'simplecov'
+  require 'simplecov-rcov'
+  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+  SimpleCov.start do
+    exlist.each do |p|
+      add_filter p
+    end
+  end
+end
+
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
-require 'simplecov' if ENV['COVERAGE']
+
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 
 require 'rspec/rails'
 require 'webmock/rspec'
 require 'factory_girl'
+require 'ffaker'
 
 # Run any available migration
 ActiveRecord::Migrator.migrate File.expand_path("../dummy/db/migrate/", __FILE__)
@@ -14,7 +28,6 @@ ActiveRecord::Migrator.migrate File.expand_path("../dummy/db/migrate/", __FILE__
 # in spec/support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 Dir["#{File.dirname(__FILE__)}/lib/**/*.rb"].each {|f| require f}
-#require 'spree/url_helpers'
 
 # Requires factories defined in spree_core
 require 'spree/testing_support/factories'
@@ -37,6 +50,7 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
   config.mock_with :rspec
+  config.color = true
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -49,5 +63,10 @@ RSpec.configure do |config|
   #config.include Spree::UrlHelpers
   #config.include Devise::TestHelpers, :type => :controller
 
+end
+
+if ENV["COVERAGE"]
+  # Load all files except the ones in exclude list
+  require_all(Dir.glob('**/*.rb') - exlist)
 end
 

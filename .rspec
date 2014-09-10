@@ -1,0 +1,5 @@
+--color
+--format documentation
+--tty
+--require spec_helper
+--profile
