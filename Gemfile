@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'spree', :github => 'godaddy/spree', :branch => '2-2-nemo-stable'
-gem 'active_shipping', :github => "Shopify/active_shipping", :branch => 'master'
 
 gemspec
 
