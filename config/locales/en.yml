@@ -37,7 +37,7 @@ en:
     express: "UPS Express"
   usps:
     express_mail: "USPS Express Mail"
-    express_mail_intl: "USPS Express Mail International"
+    express_mail_international: "USPS Express Mail International"
     first_class_package_international: "USPS First-Class Package International Service"
     media_mail: "USPS Media Mail"
     priority_mail: "USPS Priority Mail"
