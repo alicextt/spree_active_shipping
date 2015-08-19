@@ -259,7 +259,6 @@ module Spree
               max_weight = max_weight_per_package
             end
           end
-
           max_weight
         end
 
