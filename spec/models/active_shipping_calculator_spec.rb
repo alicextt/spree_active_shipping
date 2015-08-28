@@ -142,6 +142,67 @@ module ActiveShipping
         calculator.class.service_name.should == calculator.description
       end
     end
+
+    describe "cache key" do
+      before do
+        @cache_key = calculator.send(:cache_key, package)
+      end
+
+      it "should include stock location finger print" do
+        package.stock_location.update_column(:updated_at, Time.now + 1.seconds)
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include carrier name" do
+        carrier.stub(:name).and_return "#{carrier.name}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include calculator class" do
+        calculator.stub(:class).and_return "#{calculator.class.to_s}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include ship address country" do
+        package.order.ship_address.stub_chain(:country, :iso).and_return "#{package.order.ship_address.country.iso}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include ship address state" do
+        package.order.ship_address.stub_chain(:state, :abbr).and_return "#{package.order.ship_address.state.abbr}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include ship address city" do
+        package.order.ship_address.stub(:city).and_return "#{package.order.ship_address.city}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include ship address zipcode" do
+        package.order.ship_address.stub(:zipcode).and_return "#{package.order.ship_address.zipcode}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include package content variant" do
+        package.contents.delete_at(0)
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include package content quantity" do
+        package.contents.first.quantity += 1
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include package content variant weight" do
+        package.contents.first.variant.weight += 1
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+
+      it "should include I18n locale" do
+        I18n.stub(:locale).and_return "#{I18n.locale}-changed"
+        expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
+      end
+    end
 end
 
 end
