@@ -264,12 +264,11 @@ module Spree
 
         def cache_key(package)
           multiplier = Spree::ActiveShipping::Config[:unit_multiplier]
-          stock_location = package.stock_location.nil? ? "" : "#{package.stock_location.id}-"
+          stock_location = package.stock_location.nil? ? "" : "#{package.stock_location.id}_#{package.stock_location.updated_at.to_i}"
           order = package.order
           ship_address = package.order.ship_address
-          max_weight = get_max_weight(package)
           contents_hash = Digest::MD5.hexdigest(package.contents.map {|content_item| content_item.variant.id.to_s + "_" + content_item.quantity.to_s + "_" + (content_item.variant.weight * multiplier).to_s }.join("|"))
-          @cache_key = "#{stock_location}#{carrier.name}-#{max_weight}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
+          @cache_key = "#{stock_location}-#{carrier.name}-#{self.class.to_s}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
         end
 
         def fetch_best_state_from_address address

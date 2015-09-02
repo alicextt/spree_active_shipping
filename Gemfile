@@ -13,5 +13,6 @@ group :development, :test do
   gem 'awesome_print'
   gem 'rspec', '~> 2.99'
   gem 'test-unit'
+  gem 'byebug'
 end
 
