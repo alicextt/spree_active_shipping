@@ -43,7 +43,8 @@ en:
     first_class_package_international: "USPS First-Class Package International Service"
     first_class_mail_parcel: "USPS First-Class Mail Parcel"
     media_mail: "USPS Media Mail Parcel"
-    standard_post: "USPS Standard Post"
+    #USPS Jan 2016 Update rebrands standard post to retail ground
+    standard_post: "USPS Retail Ground"
     priority_mail: "USPS Priority Mail"
     priority_mail_small_flat_rate_box: "USPS Priority Mail Small Flat Rate Box"
     priority_mail_medium_flat_rate_box: "USPS Priority Mail Medium Flat Rate Box"
