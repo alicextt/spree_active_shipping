@@ -43,7 +43,8 @@ pz:
     first_class_package_international: "⌠515154⌡ZZZZ Zzzzz-Zzzzz Zzzzzzz Zzzzzzzzzzzzz Zzzzzzz⌠515154⌡"
     first_class_mail_parcel: "⌠515155⌡ZZZZ Zzzzz-Zzzzz Zzzz Zzzzzz⌠515155⌡"
     media_mail: "⌠515156⌡ZZZZ Zzzzz Zzzz Zzzzzz⌠515156⌡"
-    standard_post: "⌠515157⌡ZZZZ Zzzzzzzz Zzzz⌠515157⌡"
+    #USPS Jan 2016 Update rebrands standard post to retail ground
+    standard_post: "⌠577950⌡ZZZZ Zzzzzz Zzzzzz⌠577950⌡"
     priority_mail: "⌠515158⌡ZZZZ Zzzzzzzz Zzzz⌠515158⌡"
     priority_mail_small_flat_rate_box: "⌠515159⌡ZZZZ Zzzzzzzz Zzzz Zzzzz Zzzz Zzzz Zzz⌠515159⌡"
     priority_mail_medium_flat_rate_box: "⌠515160⌡ZZZZ Zzzzzzzz Zzzz Zzzzzz Zzzz Zzzz Zzz⌠515160⌡"

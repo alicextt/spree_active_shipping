@@ -43,7 +43,8 @@ gf:
     first_class_package_international: "⌠515154⌡USPS First-Class Package International Service⌠515154⌡"
     first_class_mail_parcel: "⌠515155⌡USPS First-Class Mail Parcel⌠515155⌡"
     media_mail: "⌠515156⌡USPS Media Mail Parcel⌠515156⌡"
-    standard_post: "⌠515157⌡USPS Standard Post⌠515157⌡"
+    #USPS Jan 2016 Update rebrands standard post to retail ground
+    standard_post: "⌠577950⌡USPS Retail Ground⌠577950⌡"
     priority_mail: "⌠515158⌡USPS Priority Mail⌠515158⌡"
     priority_mail_small_flat_rate_box: "⌠515159⌡USPS Priority Mail Small Flat Rate Box⌠515159⌡"
     priority_mail_medium_flat_rate_box: "⌠515160⌡USPS Priority Mail Medium Flat Rate Box⌠515160⌡"

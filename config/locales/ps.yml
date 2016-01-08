@@ -43,7 +43,8 @@ ps:
     first_class_package_international: "⌠515154⌡[ÜSPS Fîrst-Clåss Påckågé Întérnåtîònål Sérvîcé !!! !!! !!! !!!]⌠515154⌡"
     first_class_mail_parcel: "⌠515155⌡[ÜSPS Fîrst-Clåss Måîl Pårcél !!! !!! !!!]⌠515155⌡"
     media_mail: "⌠515156⌡[ÜSPS Médîå Måîl Pårcél !!! !!!]⌠515156⌡"
-    standard_post: "⌠515157⌡[ÜSPS Ståndård Pòst !!! !!!]⌠515157⌡"
+    #USPS Jan 2016 Update rebrands standard post to retail ground
+    standard_post: "⌠577950⌡[ÜSPS Rétåîl Gròünd !!! !!!]⌠577950⌡"
     priority_mail: "⌠515158⌡[ÜSPS Prîòrîty Måîl !!! !!!]⌠515158⌡"
     priority_mail_small_flat_rate_box: "⌠515159⌡[ÜSPS Prîòrîty Måîl Småll Flåt Råté Bòx !!! !!! !!!]⌠515159⌡"
     priority_mail_medium_flat_rate_box: "⌠515160⌡[ÜSPS Prîòrîty Måîl Médîüm Flåt Råté Bòx !!! !!! !!! !!!]⌠515160⌡"
