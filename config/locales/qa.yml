@@ -31,8 +31,11 @@ qa:
     next_day_air_saver: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:next_day_air_saver]"
     saver: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:saver]"
     second_day_air: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:second_day_air]"
+    second_day_air_am: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:second_day_air_am]"
     three_day_select: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:three_day_select]"
     worldwide_expedited: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:worldwide_expedited]"
+    worldwide_express: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:worldwide_express]"
+    worldwide_express_plus: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:worldwide_express_plus]"
     standard: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:standard]"
     express: "[spree_active_shipping/2-2-nemo-stable/config/locales/en.yml:qa:ups:express]"
   usps:
