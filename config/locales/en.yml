@@ -31,8 +31,11 @@ en:
     next_day_air_saver: "UPS Next Day Air Saver"
     saver: "UPS Saver"
     second_day_air: "UPS Second Day Air"
+    second_day_air_am: "UPS Second Day Air A.M."
     three_day_select: "UPS Three-Day Select"
     worldwide_expedited: "UPS Worldwide Expedited"
+    worldwide_express: "UPS Worldwide Express"
+    worldwide_express_plus: "UPS Worldwide Express Plus"
     standard: "UPS Standard"
     express: "UPS Express"
   usps:
