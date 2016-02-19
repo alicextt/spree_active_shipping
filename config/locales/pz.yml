@@ -31,8 +31,11 @@ pz:
     next_day_air_saver: "⌠515143⌡ZZZ Zzzz Zzz Zzz Zzzzz⌠515143⌡"
     saver: "⌠515144⌡ZZZ Zzzzz⌠515144⌡"
     second_day_air: "⌠515145⌡ZZZ Zzzzzz Zzz Zzz⌠515145⌡"
+    second_day_air_am: "⌠601130⌡ZZZ Zzzzzz Zzz Zzz Z.Z.⌠601130⌡"
     three_day_select: "⌠515146⌡ZZZ Zzzzz-Zzz Zzzzzz⌠515146⌡"
     worldwide_expedited: "⌠515147⌡ZZZ Zzzzzzzzz Zzzzzzzzz⌠515147⌡"
+    worldwide_express: "⌠601131⌡ZZZ Zzzzzzzzz Zzzzzzz⌠601131⌡"
+    worldwide_express_plus: "⌠601132⌡ZZZ Zzzzzzzzz Zzzzzzz Zzzz⌠601132⌡"
     standard: "⌠515148⌡ZZZ Zzzzzzzz⌠515148⌡"
     express: "⌠515149⌡ZZZ Zzzzzzz⌠515149⌡"
   usps:

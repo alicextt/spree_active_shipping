@@ -31,8 +31,11 @@ ps:
     next_day_air_saver: "⌠515143⌡[ÜPS Néxt Dåy Åîr Såvér !!! !!!]⌠515143⌡"
     saver: "⌠515144⌡[ÜPS Såvér !!! !!! !!! !!! !!! !!! !!! !!! !!!]⌠515144⌡"
     second_day_air: "⌠515145⌡[ÜPS Sécònd Dåy Åîr !!! !!!]⌠515145⌡"
+    second_day_air_am: "⌠601130⌡[ÜPS Sécònd Dåy Åîr Å.M. !!! !!!]⌠601130⌡"
     three_day_select: "⌠515146⌡[ÜPS Thréé-Dåy Séléct !!! !!!]⌠515146⌡"
     worldwide_expedited: "⌠515147⌡[ÜPS Wòrldwîdé Éxpédîtéd !!! !!!]⌠515147⌡"
+    worldwide_express: "⌠601131⌡[ÜPS Wòrldwîdé Éxpréss !!! !!!]⌠601131⌡"
+    worldwide_express_plus: "⌠601132⌡[ÜPS Wòrldwîdé Éxpréss Plüs !!! !!!]⌠601132⌡"
     standard: "⌠515148⌡[ÜPS Ståndård !!!]⌠515148⌡"
     express: "⌠515149⌡[ÜPS Éxpréss !!!]⌠515149⌡"
   usps:

@@ -31,8 +31,11 @@ gf:
     next_day_air_saver: "⌠515143⌡UPS Next Day Air Saver⌠515143⌡"
     saver: "⌠515144⌡UPS Saver⌠515144⌡"
     second_day_air: "⌠515145⌡UPS Second Day Air⌠515145⌡"
+    second_day_air_am: "⌠601130⌡UPS Second Day Air A.M.⌠601130⌡"
     three_day_select: "⌠515146⌡UPS Three-Day Select⌠515146⌡"
     worldwide_expedited: "⌠515147⌡UPS Worldwide Expedited⌠515147⌡"
+    worldwide_express: "⌠601131⌡UPS Worldwide Express⌠601131⌡"
+    worldwide_express_plus: "⌠601132⌡UPS Worldwide Express Plus⌠601132⌡"
     standard: "⌠515148⌡UPS Standard⌠515148⌡"
     express: "⌠515149⌡UPS Express⌠515149⌡"
   usps:
