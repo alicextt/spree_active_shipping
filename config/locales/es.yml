@@ -31,8 +31,11 @@ es:
     next_day_air_saver: "UPS Next Day Air Saver (día siguiente, por avión, ahorrador)"
     saver: "UPS Saver (ahorrador)"
     second_day_air: "UPS Second Day Air (al segundo día, por avión)"
+    second_day_air_am: "UPS Second Day Air A.M. (al segundo día, por avión, entrega por la mañana)"
     three_day_select: "UPS Three-Day Select (tres días, selecto)"
     worldwide_expedited: "UPS Worldwide Expedited (en todo el mundo, rápido)"
+    worldwide_express: "UPS Worldwide Express (en todo el mundo, rápido)"
+    worldwide_express_plus: "UPS Worldwide Express Plus (en todo el mundo, rápido, antes de las 9 de la mañana)"
     standard: "UPS Standard (normal)"
     express: "UPS Express (exprés)"
   usps:
