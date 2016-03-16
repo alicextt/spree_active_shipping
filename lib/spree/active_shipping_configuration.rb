@@ -5,6 +5,7 @@ class Spree::ActiveShippingConfiguration < Spree::Preferences::Configuration
   preference :ups_key, :string, :default => "developer_key"
   preference :ups_rate_type, :string, :default => 'negotiated'
   preference :shipper_number, :string, :default => nil
+  preference :ups_pickup_type, :string, :daily_pickup
 
   preference :fedex_login, :string, :default => "meter_no"
   preference :fedex_password, :string, :default => "special_sha1_looking_thing_sent_via_email"
