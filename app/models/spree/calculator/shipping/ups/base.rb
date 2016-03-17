@@ -29,6 +29,10 @@ module Spree
               details.merge!(:origin_account => shipper_number)
             end
 
+            if ups_pickup_type = Spree::ActiveShipping::Config[:ups_pickup_type]
+              details.merge!(:pickup_type => ups_pickup_type)
+            end
+
             details
           end
         end
