@@ -286,7 +286,7 @@ module Spree
         end
 
         def retrieve_rates_from_cache package, origin, destination
-          Rails.cache.fetch(cache_key(package)) do
+          Rails.cache.fetch(cache_key(package), expires_in: 1.hour) do
             shipment_packages = packages(package)
             if shipment_packages.empty?
               {}
