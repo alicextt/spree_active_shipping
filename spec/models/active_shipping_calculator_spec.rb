@@ -203,6 +203,30 @@ module ActiveShipping
         expect(calculator.send(:cache_key, package)).not_to eq(@cache_key)
       end
     end
+
+    describe "build_locations" do
+      let(:origin) do
+        origin = address.dup
+        origin.zipcode += '-1234'
+        origin
+      end
+      let(:demostic_dest) { address }
+      let(:international_dest) do
+        FactoryGirl.build(:address, country: FactoryGirl.build(:country, iso: 'UK'))
+      end
+
+      it "should include +4 zipcode for domestic shipping" do
+        expect(calculator).to receive(:build_location).with(origin)
+        expect(calculator).to receive(:build_location)
+        calculator.send(:build_locations, origin, demostic_dest)
+      end
+
+      it "should not include +4 zipcode for international shipping" do
+        expect(calculator).to receive(:build_location).with(address)
+        expect(calculator).to receive(:build_location)
+        calculator.send(:build_locations, origin, international_dest)
+      end
+    end
 end
 
 end
