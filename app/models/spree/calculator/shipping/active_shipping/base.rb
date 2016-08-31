@@ -125,9 +125,7 @@ module Spree
               message = e.message
             end
 
-            error = Spree::ShippingError.new("#{I18n.t(:shipping_error)}: #{message}")
-            Rails.cache.write @cache_key, error #write error to cache to prevent constant re-lookups
-            raise error
+            raise Spree::ShippingError.new("#{I18n.t(:shipping_error)}: #{message}")
           end
 
         end
@@ -288,7 +286,7 @@ module Spree
         end
 
         def retrieve_rates_from_cache package, origin, destination
-          Rails.cache.fetch(cache_key(package)) do
+          Rails.cache.fetch(cache_key(package), expires_in: 1.hour) do
             shipment_packages = packages(package)
             if shipment_packages.empty?
               {}
