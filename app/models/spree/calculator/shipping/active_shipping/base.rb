@@ -30,8 +30,7 @@ module Spree
           order = package.order
           stock_location = package.stock_location
 
-          origin = build_location(stock_location)
-          destination = build_location(order.ship_address)
+          origin, destination = build_locations(stock_location, order.ship_address)
 
           rates_result = retrieve_rates_from_cache(package, origin, destination)
 
@@ -283,6 +282,10 @@ module Spree
                        :state   => fetch_best_state_from_address(address),
                        :city    => address.city,
                        :zip     => address.zipcode)
+        end
+
+        def build_locations origin, destination
+          [build_location(origin), build_location(destination)]
         end
 
         def retrieve_rates_from_cache package, origin, destination

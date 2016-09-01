@@ -51,6 +51,17 @@ module Spree
 
         end
 
+        def build_locations origin, destination
+          # USPS international doesn't handle +4 extended zip code
+          if destination.country.iso != 'US' && origin.country.iso == 'US' && origin.zipcode.match('-')
+            address = origin.dup
+            address.zipcode.sub!(/-.*/, '')
+            [build_location(address), build_location(destination)]
+          else
+            [build_location(origin), build_location(destination)]
+          end
+        end
+
         protected
         # weight limit in ounces or zero (if there is no limit)
         def max_weight_for_country(country)
