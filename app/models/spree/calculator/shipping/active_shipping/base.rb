@@ -124,7 +124,9 @@ module Spree
               message = e.message
             end
 
-            raise Spree::ShippingError.new("#{I18n.t(:shipping_error)}: #{message}")
+            error = Spree::ShippingError.new("#{I18n.t(:shipping_error)}: #{message}")
+            Rails.cache.write @cache_key, error #write error to cache to prevent constant re-lookups
+            raise error
           end
 
         end
@@ -270,7 +272,7 @@ module Spree
           order = package.order
           ship_address = package.order.ship_address
           contents_hash = Digest::MD5.hexdigest(package.contents.map {|content_item| content_item.variant.id.to_s + "_" + content_item.quantity.to_s + "_" + (content_item.variant.weight * multiplier).to_s }.join("|"))
-          @cache_key = "#{stock_location}-#{carrier_key}-#{self.class.to_s}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
+          @cache_key = "#{stock_location}-#{carrier_key}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
         end
 
         def fetch_best_state_from_address address
