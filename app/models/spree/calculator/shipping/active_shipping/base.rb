@@ -288,7 +288,7 @@ module Spree
             # UPS-93dc3a965816028f3c32f3bb24469531 or USPS
             @cache_key = "#{stock_location}-#{carrier_key}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
           else
-            @cache_key = "#{stock_location}-#{carrier_key}-#{ship_address.country.iso}-#{self.class.to_s}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
+            @cache_key = "#{stock_location}-#{carrier_key}-#{self.class.to_s}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
           end
 
           @cache_key
