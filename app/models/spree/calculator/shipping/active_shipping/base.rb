@@ -272,7 +272,7 @@ module Spree
           order = package.order
           ship_address = package.order.ship_address
           contents_hash = Digest::MD5.hexdigest(package.contents.map {|content_item| content_item.variant.id.to_s + "_" + content_item.quantity.to_s + "_" + (content_item.variant.weight * multiplier).to_s }.join("|"))
-          parcel = carrier_key.include? "UPS" ? 'Spree::Calculator::Shipping::Ups::Base' : self.class.to_s
+          parcel = (carrier_key.include? "UPS") ? 'Spree::Calculator::Shipping::Ups::Base' : self.class.to_s
           # for UPS, the API responds with all the parcel prices that the merchant
           # has enabled. As a result, we don't want to include the parcel specific
           # name inside the @cache_key. This would cause us to send a separate
