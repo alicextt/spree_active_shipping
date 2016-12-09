@@ -272,26 +272,18 @@ module Spree
           order = package.order
           ship_address = package.order.ship_address
           contents_hash = Digest::MD5.hexdigest(package.contents.map {|content_item| content_item.variant.id.to_s + "_" + content_item.quantity.to_s + "_" + (content_item.variant.weight * multiplier).to_s }.join("|"))
-          if carrier_key.include? "UPS"
-            # for UPS, the API responds with all the parcel prices that the merchant
-            # has enabled. As a result, we don't want to include the parcel specific
-            # name inside the @cache_key. This would cause us to send a separate
-            # API request for each parcel when we could've just sent one request,
-            # cached it, and retrieved it from the cache for the other parcels.
-            # More info at JIRA Ticket: NEMO-7139
+          parcel = carrier_key.include? "UPS" ? 'Spree::Calculator::Shipping::Ups::Base' : self.class.to_s
+          # for UPS, the API responds with all the parcel prices that the merchant
+          # has enabled. As a result, we don't want to include the parcel specific
+          # name inside the @cache_key. This would cause us to send a separate
+          # API request for each parcel when we can just sent one request,
+          # cache it, and retrieve it from the cache for the other parcels.
+          # More info at JIRA Ticket: NEMO-7139
 
-            # For reference, self.class.to_s would be something like:
-            # Spree::Calculator::Shipping::Usps::ExpressMail or
-            # Spree::Calculator::Shipping::Ups::NextDayAir
-
-            # carrier_key would be something like:
-            # UPS-93dc3a965816028f3c32f3bb24469531 or USPS
-            @cache_key = "#{stock_location}-#{carrier_key}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
-          else
-            @cache_key = "#{stock_location}-#{carrier_key}-#{self.class.to_s}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
-          end
-
-          @cache_key
+          # With this new change, the variable parcel would be equal to
+          # 'Spree::Calculator::Shipping::Ups::Base' for all UPS requests and
+          # equal to 'Spree::Calculator::Shipping::Usps::#{specific_parcel_name}'
+          @cache_key = "#{stock_location}-#{carrier_key}-#{parcel}-#{ship_address.country.iso}-#{fetch_best_state_from_address(ship_address)}-#{ship_address.city}-#{ship_address.zipcode}-#{contents_hash}-#{I18n.locale}".gsub(" ","")
         end
 
         def fetch_best_state_from_address address
