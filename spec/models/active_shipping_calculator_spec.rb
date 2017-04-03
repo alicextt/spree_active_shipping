@@ -8,7 +8,7 @@ module ActiveShipping
 
     let(:address) { FactoryGirl.create(:address) }
     let!(:order) do
-      order = FactoryGirl.create(:order_with_line_items, :ship_address => address, :line_items_count => 2)
+      order = FactoryGirl.create(:order_with_line_items, ship_address: address, :line_items_count => 2)
       order.line_items.first.tap do |line_item|
         line_item.quantity = 2
         line_item.variant.save
@@ -28,16 +28,16 @@ module ActiveShipping
       order
     end
 
-    let(:carrier) { ActiveMerchant::Shipping::USPS.new(:login => "FAKEFAKEFAKE") }
+    let(:carrier) { ActiveMerchant::Shipping::USPS.new(login: "FAKEFAKEFAKE") }
     let(:calculator) { Spree::Calculator::Shipping::Usps::ExpressMail.new }
-    let(:response) { double('response', :rates => rates, :params => {}) }
+    let(:response) { double('response', rates: rates, :params => {}) }
     let(:package) { order.shipments.first.to_package }
 
     before(:each) do
       order.create_proposed_shipments
       expect(order.shipments.count).to eq 1
-      Spree::ActiveShipping::Config.set(:units => "imperial")
-      Spree::ActiveShipping::Config.set(:unit_multiplier => 1)
+      Spree::ActiveShipping::Config.set(units: "imperial")
+      Spree::ActiveShipping::Config.set(unit_multiplier: 1)
       allow(calculator).to receive(:carrier).and_return(carrier)
       Rails.cache.clear
     end
@@ -45,7 +45,7 @@ module ActiveShipping
     describe "available" do
       context "when rates are available" do
         let(:rates) do
-          [ double('rate', :service_name => 'Service', :service_code => 3, :price => 1) ]
+          [ double('rate', service_name: 'Service', :service_code => 3, :price => 1) ]
         end
 
         before do
@@ -88,7 +88,7 @@ module ActiveShipping
     describe "compute" do
       it "should use the carrier supplied in the initializer" do
         stub_request(:get, /http:\/\/production.shippingapis.com\/ShippingAPI.dll.*/).
-          to_return(:body => fixture(:normal_rates_request))
+          to_return(body: fixture(:normal_rates_request))
         expect(calculator.compute(package)).to eq 14.1
       end
 
@@ -101,7 +101,7 @@ module ActiveShipping
 
       xit "should create a package with the correct total weight in ounces" do
         # (10 * 2 + 5.25 * 1) * 16 = 404
-        expect(Package).to receive(:new).with(404, [], :units => :imperial)
+        expect(Package).to receive(:new).with(404, [], units: :imperial)
         calculator.compute(package)
       end
 
@@ -124,7 +124,7 @@ module ActiveShipping
 
         xit "should include handling_fee when configured" do
           expect(calculator.class).to receive(:description).and_return("Super Fast")
-          Spree::ActiveShipping::Config.set(:handling_fee => 100)
+          Spree::ActiveShipping::Config.set(handling_fee: 100)
           rate = calculator.compute(package)
           expect(rate).to eq 10.99
         end

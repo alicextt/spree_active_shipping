@@ -19,18 +19,18 @@ module Spree
         def carrier_details
           @carrier_details ||= begin
             details = {
-              :login => Spree::ActiveShipping::Config[:ups_login],
-              :password => Spree::ActiveShipping::Config[:ups_password],
-              :key => Spree::ActiveShipping::Config[:ups_key],
-              :test => Spree::ActiveShipping::Config[:test_mode]
+              login: Spree::ActiveShipping::Config[:ups_login],
+              password: Spree::ActiveShipping::Config[:ups_password],
+              key: Spree::ActiveShipping::Config[:ups_key],
+              test: Spree::ActiveShipping::Config[:test_mode]
             }
 
             if Spree::ActiveShipping::Config[:ups_rate_type] == 'negotiated' && shipper_number = Spree::ActiveShipping::Config[:shipper_number]
-              details.merge!(:origin_account => shipper_number)
+              details.merge!(origin_account: shipper_number)
             end
 
             if ups_pickup_type = Spree::ActiveShipping::Config[:ups_pickup_type]
-              details.merge!(:pickup_type => ups_pickup_type)
+              details.merge!(pickup_type: ups_pickup_type)
             end
 
             details
