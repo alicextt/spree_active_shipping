@@ -203,6 +203,7 @@ module Spree
 
           # NOTE: this will effectively disable rate calculation for ProductPackages which
           # we do not use in Nemo. KES Apr 3, 2017 9:57 AM
+          # ProductPackages are used for items that only ever ship in their own package (box) and can not be combined
           [].each do |content_item|
             variant  = content_item.variant
             quantity = content_item.quantity
