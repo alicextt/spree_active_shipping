@@ -228,9 +228,9 @@ module Spree
                 guaranteed_code = service_summary.get_text('Guaranteed/Code').to_s
                 business_transit_days = service_summary.get_text('EstimatedArrival/BusinessTransitDays').to_s
                 date = service_summary.get_text('EstimatedArrival/Date').to_s
-                rate_estimates[service_name_for(origin, service_code_2)] = {:service_code => service_code, :service_code_2 => service_code_2, :service_desc => service_desc,
-                    :guaranteed_code => guaranteed_code, :business_transit_days => business_transit_days,
-                    :date => date}
+                rate_estimates[service_name_for(origin, service_code_2)] = { service_code: service_code, service_code_2: service_code_2, service_desc: service_desc,
+                    guaranteed_code: guaranteed_code, business_transit_days: business_transit_days,
+                    date: date }
               end
             end
             return rate_estimates
@@ -253,17 +253,17 @@ module Spree
                 negotiated_rate = rated_shipment.get_text('NegotiatedRates/NetSummaryCharges/GrandTotal/MonetaryValue').to_s
                 total_price     = negotiated_rate.blank? ? rated_shipment.get_text('TotalCharges/MonetaryValue').to_s.to_f : negotiated_rate.to_f
                 currency        = negotiated_rate.blank? ? rated_shipment.get_text('TotalCharges/CurrencyCode').to_s : rated_shipment.get_text('NegotiatedRates/NetSummaryCharges/GrandTotal/CurrencyCode').to_s
-                
+
                 rate_estimates << ActiveMerchant::Shipping::RateEstimate.new(origin, destination, ActiveMerchant::Shipping::UPS.name,
                                     service_name_for(origin, service_code),
-                                    :total_price => total_price,
-                                    :currency => currency,
-                                    :service_code => service_code,
-                                    :packages => packages
+                                    total_price: total_price,
+                                    currency: currency,
+                                    service_code: service_code,
+                                    packages: packages
                                     )
               end
             end
-            ActiveMerchant::Shipping::RateResponse.new(success, message, Hash.from_xml(response).values.first, :rates => rate_estimates, :xml => response, :request => last_request)
+            ActiveMerchant::Shipping::RateResponse.new(success, message, Hash.from_xml(response).values.first, rates: rate_estimates, xml: response, request: last_request)
           end
         end
       end

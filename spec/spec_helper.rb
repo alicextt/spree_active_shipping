@@ -38,6 +38,14 @@ require 'spree/testing_support/url_helpers'
 Dir[File.join(File.dirname(__FILE__), "factories/*.rb")].each {|f| require f }
 
 RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+     c.syntax = :expect
+   end
+
+  config.infer_spec_type_from_file_location!
+  config.filter_run_including focus: true
+  config.run_all_when_everything_filtered = true
+
   config.include Spree::TestingSupport::ControllerRequests
   config.include FactoryGirl::Syntax::Methods
   config.include Spree::TestingSupport::UrlHelpers
@@ -61,7 +69,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   #config.include Spree::UrlHelpers
-  #config.include Devise::TestHelpers, :type => :controller
+  #config.include Devise::TestHelpers, type: :controller
 
 end
 

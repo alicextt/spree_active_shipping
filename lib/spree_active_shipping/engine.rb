@@ -3,7 +3,7 @@ end
 module SpreeActiveShippingExtension
   class Engine < Rails::Engine
 
-    initializer "spree.active_shipping.preferences", :before => :load_config_initializers do |app|
+    initializer "spree.active_shipping.preferences", before: :load_config_initializers do |app|
       Spree::ActiveShipping::Config = Spree::ActiveShippingConfiguration.new
     end
 
@@ -40,7 +40,7 @@ module SpreeActiveShippingExtension
     end
 
         # sets the manifests / assets to be precompiled, even when initialize_on_precompile is false
-    initializer "spree.assets.precompile", :group => :all do |app|
+    initializer "spree.assets.precompile", group: :all do |app|
       app.config.assets.precompile += %w[
         admin/product_packages/new.js
         admin/product_packages/edit.js
