@@ -3,6 +3,7 @@
 #
 # Digest::MD5 is used for cache_key generation.
 require 'digest/md5'
+require 'box_packer'
 require_dependency 'spree/calculator'
 
 module Spree
@@ -48,15 +49,15 @@ module Spree
         def timing(line_items)
           order = line_items.first.order
           # TODO: Figure out where stock_location is supposed to come from.
-          origin= Location.new(:country => stock_location.country.iso,
-                               :city => stock_location.city,
-                               :state => (stock_location.state ? stock_location.state.abbr : stock_location.state_name),
-                               :zip => stock_location.zipcode)
+          origin= Location.new(country: stock_location.country.iso,
+                               city: stock_location.city,
+                               state: (stock_location.state ? stock_location.state.abbr : stock_location.state_name),
+                               zip: stock_location.zipcode)
           addr = order.ship_address
-          destination = Location.new(:country => addr.country.iso,
-                                     :state => (addr.state ? addr.state.abbr : addr.state_name),
-                                     :city => addr.city,
-                                     :zip => addr.zipcode)
+          destination = Location.new(country: addr.country.iso,
+                                     state: (addr.state ? addr.state.abbr : addr.state_name),
+                                     city: addr.city,
+                                     zip: addr.zipcode)
           timings_result = Rails.cache.fetch(cache_key(package)+"-timings") do
             retrieve_timings(origin, destination, packages(order))
           end
@@ -156,41 +157,43 @@ module Spree
           end
         end
 
+        def expand_package_contents(package)
+          exploded_package = Spree::Stock::Package.new(package.stock_location, package.order)
+          package.contents.each do |content_item|
+            content_item.quantity.times do
+              exploded_package.add(content_item.line_item, 1, content_item.state)
+            end
+          end
+          exploded_package
+        end
+
         def convert_package_to_weights_array(package)
           multiplier = Spree::ActiveShipping::Config[:unit_multiplier]
           default_weight = Spree::ActiveShipping::Config[:default_weight]
           max_weight = get_max_weight(package)
+          if max_weight <= 0
+            max_weight = 999_999_999
+          end
 
-          weights = package.contents.map do |content_item|
+          item_weights = expand_package_contents(package).contents.map do |content_item|
             item_weight = content_item.variant.weight.to_f
             item_weight = default_weight if item_weight <= 0
             item_weight *= multiplier
-
-            quantity = content_item.quantity
-            if max_weight <= 0
-              item_weight * quantity
-            elsif item_weight == 0
-              0
-            else
-              if item_weight < max_weight
-                max_quantity = (max_weight/item_weight).floor
-                if quantity < max_quantity
-                  item_weight * quantity
-                else
-                  new_items = []
-                  while quantity > 0 do
-                    new_quantity = [max_quantity, quantity].min
-                    new_items << (item_weight * new_quantity)
-                    quantity -= new_quantity
-                  end
-                  new_items
-                end
-              else
-                raise Spree::ShippingError.new("#{I18n.t(:shipping_error)}: The maximum per package weight for the selected service from the selected country is #{max_weight} ounces.")
-              end
-            end
           end
-          weights.flatten.compact.sort
+          item_weights.sort!
+
+          # pack items by weight ignorning size
+          packer = BoxPacker.container [999,999,999], weight_limit: max_weight do
+            item_weights.each { |item_weight| add_item([0,0,0], weight: item_weight, quantity: 1) }
+            pack!
+          end
+
+          unless packer.packed_successfully
+            raise Spree::ShippingError.new("#{I18n.t(:shipping_error)}: The maximum per package weight for the selected service from the selected country is #{max_weight} ounces.")
+          end
+
+          weights = packer.packings.map { |packing| packing.sum(&:weight) }
+          weights.sort
         end
 
         def convert_package_to_item_packages_array(package)
@@ -198,7 +201,10 @@ module Spree
           max_weight = get_max_weight(package)
           packages = []
 
-          package.contents.each do |content_item|
+          # NOTE: this will effectively disable rate calculation for ProductPackages which
+          # we do not use in Nemo. KES Apr 3, 2017 9:57 AM
+          # ProductPackages are used for items that only ever ship in their own package (box) and can not be combined
+          [].each do |content_item|
             variant  = content_item.variant
             quantity = content_item.quantity
             product  = variant.product
@@ -226,22 +232,22 @@ module Spree
           item_specific_packages = convert_package_to_item_packages_array(package)
 
           if max_weight <= 0
-            packages << Package.new(weights.sum, [], :units => units)
+            packages << Package.new(weights.sum, [], units: units)
           else
             package_weight = 0
             weights.each do |content_weight|
               if package_weight + content_weight <= max_weight
                 package_weight += content_weight
               else
-                packages << Package.new(package_weight, [], :units => units)
+                packages << Package.new(package_weight, [], units: units)
                 package_weight = content_weight
               end
             end
-            packages << Package.new(package_weight, [], :units => units) if package_weight > 0
+            packages << Package.new(package_weight, [], units: units) if package_weight > 0
           end
 
           item_specific_packages.each do |package|
-            packages << Package.new(package.at(0), [package.at(1), package.at(2), package.at(3)], :units => :imperial)
+            packages << Package.new(package.at(0), [package.at(1), package.at(2), package.at(3)], units: :imperial)
           end
 
           packages
@@ -291,10 +297,10 @@ module Spree
         end
 
         def build_location address
-          Location.new(:country => address.country.iso,
-                       :state   => fetch_best_state_from_address(address),
-                       :city    => address.city,
-                       :zip     => address.zipcode)
+          Location.new(country: address.country.iso,
+                       state:   fetch_best_state_from_address(address),
+                       city:    address.city,
+                       zip:     address.zipcode)
         end
 
         def build_locations origin, destination

@@ -4,14 +4,14 @@ module Spree
       class Base < Spree::Calculator::Shipping::ActiveShipping::Base
 
         SERVICE_CODE_PREFIX = {
-          :international => 'intl',
+          international: 'intl',
           :domestic      => 'dom'
         }
 
         def carrier
           carrier_details = {
-            :login => Spree::ActiveShipping::Config[:usps_login],
-            :test => Spree::ActiveShipping::Config[:test_mode]
+            login: Spree::ActiveShipping::Config[:usps_login],
+            test: Spree::ActiveShipping::Config[:test_mode]
           }
 
           ActiveMerchant::Shipping::USPS.new(carrier_details)

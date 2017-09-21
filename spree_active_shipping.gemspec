@@ -19,8 +19,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'spree_core', '~> 2.2.5'
   s.add_dependency 'active_shipping', '~> 0.12.4'
+  s.add_dependency 'box_packer', '~> 1.0'
   s.add_development_dependency 'ffaker'
-  s.add_development_dependency 'rspec-rails', '~> 2.13'
+  s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'simplecov'
