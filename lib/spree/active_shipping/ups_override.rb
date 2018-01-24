@@ -4,6 +4,25 @@ module Spree
       def self.included(base)
 
         base.class_eval do
+          def valid_credentials?
+            location = self.class.default_location
+            response = find_rates(location, location, ActiveMerchant::Shipping::Package.new(100, [5, 15, 30]), test: test_mode)
+
+            if response.success?
+              if @options[:origin_account] && !response.params['RatedShipment'].first['NegotiatedRates']
+                return OpenStruct.new(
+                  valid?: false,
+                  type: :negotiated_rates_credentials
+                )
+              end
+
+              true
+            else
+              false
+            end
+          rescue ActiveMerchant::Shipping::ResponseError
+            false
+          end
 
           def build_rate_request(origin, destination, packages, options={})
              packages = Array(packages)
