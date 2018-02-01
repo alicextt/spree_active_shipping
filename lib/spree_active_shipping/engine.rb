@@ -22,6 +22,11 @@ module SpreeActiveShippingExtension
 
       # Fix Canada Post "Ready to ship" package
       ActiveMerchant::Shipping::CanadaPost.send(:include, Spree::ActiveShipping::CanadaPostOverride)
+
+      ActiveMerchant::Shipping::CanadaPostPWS.send(
+        :include,
+        Spree::ActiveShipping::CanadaPostPWSOverride
+      )
     end
 
     config.autoload_paths += %W(#{config.root}/lib)
