@@ -3,6 +3,8 @@ module Spree
     module CanadaPostPWSOverride
       def self.included(base)
         base.class_eval do
+          cattr_reader :name
+
           def self.default_location
             ActiveMerchant::Shipping::Location.new(
               country: 'CA',
