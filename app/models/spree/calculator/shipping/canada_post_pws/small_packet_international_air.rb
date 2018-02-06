@@ -1,13 +1,13 @@
 module Spree
   module Calculator::Shipping
     module CanadaPostPws
-      class TrackedPacketUsa < Spree::Calculator::Shipping::CanadaPostPws::Base
+      class SmallPacketInternationalAir < Spree::Calculator::Shipping::CanadaPostPws::Base
         def self.geo_group
           :international
         end
 
         def self.description
-          I18n.t('canada_post_pws.tracked_packet_usa')
+          I18n.t('canada_post_pws.small_packet_international_air')
         end
       end
     end

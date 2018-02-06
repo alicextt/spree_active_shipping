@@ -7,7 +7,7 @@ module Spree
         end
 
         def self.description
-          I18n.t('canada_post.xpresspost_international')
+          I18n.t('canada_post_pws.xpresspost_international')
         end
       end
     end

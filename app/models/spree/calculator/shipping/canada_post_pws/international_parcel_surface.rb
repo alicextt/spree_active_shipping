@@ -1,13 +1,13 @@
 module Spree
   module Calculator::Shipping
     module CanadaPostPws
-      class PriorityWorldwideUsa < Spree::Calculator::Shipping::CanadaPostPws::Base
+      class InternationalParcelSurface < Spree::Calculator::Shipping::CanadaPostPws::Base
         def self.geo_group
           :international
         end
 
         def self.description
-          I18n.t('canada_post.priority_worldwide_usa')
+          I18n.t('canada_post_pws.international_parcel_surface')
         end
       end
     end
