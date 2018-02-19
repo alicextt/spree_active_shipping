@@ -20,6 +20,27 @@ module Spree
             )
           end
 
+          def headers(customer_credentials, accept = nil, content_type = nil)
+            headers = {
+              'Authorization'   => encoded_authorization(customer_credentials),
+              'Accept-Language' => language
+            }
+            headers['Accept'] = accept if accept
+            headers['Content-Type'] = content_type if content_type
+            headers['Platform-Id'] = platform_id if platform_id
+
+            headers
+          end
+
+          def valid_credentials?
+            location = self.class.default_location
+            find_rates(location, location, (ActiveMerchant::Shipping::Package.new(100,[10,10,10], units: :metric)))
+          rescue ActiveShipping::ResponseError
+            false
+          else
+            true
+          end
+
           # Override the method to allow the use of multiple packages.
           def find_rates(origin, destination, line_items = [], options = {}, package = nil, services = [])
             url = "#{endpoint}rs/ship/price"
