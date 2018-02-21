@@ -1,6 +1,8 @@
 module Spree
   module ActiveShipping
     module CanadaPostPWSOverride
+      MAX_ASYNC_REQUESTS = 10
+
       def self.included(base)
         def initialize(options = {})
           @contract_id = options[:contract_id]
@@ -48,10 +50,19 @@ module Spree
             # Each line item is a package (ActiveMerchant::Shipping::Package),
             # as Canada Post does not allow sending multiple packages when
             # fetching the services we need to make a request for each package.
-            responses = Array(line_items).map do |line_item|
-              request = build_rates_request(origin, destination, line_item, options, package, services)
-              ssl_post(url, request, headers(options, ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE, ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE))
+            requests = Array(line_items).map do |line_item|
+              build_rates_request(origin, destination, line_item, options, package, services)
             end
+
+            responses = peform_requests_async(
+              url,
+              requests,
+              headers(
+                options,
+                ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE,
+                ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE
+              )
+            )
 
             parse_rates_responses(responses, origin, destination)
           rescue ActiveMerchant::ResponseError, ActiveMerchant::Shipping::ResponseError => e
@@ -105,6 +116,23 @@ module Spree
               el << XmlNode.new('oversized', true) if line_items.any?(&:oversized?)
               el << XmlNode.new('unpackaged', line_items.any?(&:unpackaged?))
             end
+          end
+
+          private
+
+          def peform_requests_async(url, requests, headers)
+            responses = []
+
+            requests_queue = requests.pop(ActiveMerchant::Shipping::CanadaPostPWS::MAX_ASYNC_REQUESTS)
+            while requests_queue.any?
+              requests_queue.map do |request|
+                Thread.new { responses << ssl_post(url, request, headers) }
+              end.each(&:join)
+
+              requests_queue = requests.pop(ActiveMerchant::Shipping::CanadaPostPWS::MAX_ASYNC_REQUESTS)
+            end
+
+            responses
           end
         end
       end
