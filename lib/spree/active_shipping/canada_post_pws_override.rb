@@ -122,7 +122,7 @@ module Spree
                 Thread.new do
                   mutex.synchronize do
                     responses[weight_and_dimensions] =
-                      ssl_post(url, request, headers)
+                      find_rate_from_cache(url, request, headers)
                   end
                 end
               end
@@ -136,6 +136,20 @@ module Spree
             end
 
             responses
+          end
+
+          def find_rate_from_cache(url, request, headers)
+            cache_key = find_rate_cache_key(url, request, headers)
+
+            Rails.cache.fetch(cache_key, expires_in: 1.hour) do
+              ssl_post(url, request, headers)
+            end
+          end
+
+          def find_rate_cache_key(url, request, headers)
+            request_hash = Digest::MD5.hexdigest(request)
+            headers_hash = Digest::MD5.hexdigest(headers.to_a.join('|'))
+            "#{name}-#{self.class}-#{url}-#{request_hash}-#{headers_hash}-#{I18n.locale}".gsub(' ', '')
           end
 
           def ungroup_rates_responses(grouped_responses, similar_packages)
