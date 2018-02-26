@@ -1,8 +1,6 @@
 module Spree
   module ActiveShipping
     module CanadaPostPWSOverride
-      MAX_ASYNC_REQUESTS = 10
-
       def self.included(base)
         def initialize(options = {})
           @contract_id = options[:contract_id]
@@ -56,8 +54,8 @@ module Spree
             )
 
             similar_packages = group_packages_by_weight_and_dimensions(line_items)
-            requests = build_rates_requests(origin, destination, similar_packages, options, package, services)
-            grouped_responses = peform_rates_requests_async(url, requests, headers)
+            grouped_requests = build_rates_requests(origin, destination, similar_packages, options, package, services)
+            grouped_responses = peform_rates_requests_async(url, grouped_requests, headers)
             responses = ungroup_rates_responses(grouped_responses, similar_packages)
             parse_rates_responses(responses, origin, destination)
           rescue ActiveMerchant::ResponseError, ActiveMerchant::Shipping::ResponseError => e
@@ -94,109 +92,46 @@ module Spree
           private
 
           def group_packages_by_weight_and_dimensions(packages)
-            Array(packages).group_by do |package|
-              [package.kilograms, package.cm]
-            end
-          end
-
-          def build_rates_requests(origin, destination, similar_packages, options, package, services)
-            similar_packages.map do |weight_and_dimensions, packages|
-              request = build_rates_request(origin, destination, packages.first, options, package, services)
-              [weight_and_dimensions, request]
-            end
-          end
-
-          def peform_rates_requests_async(url, requests, headers)
-            mutex = Mutex.new
-            responses = {}
-
-            requests_queue = requests.pop(
-              ActiveMerchant::Shipping::CanadaPostPWS::MAX_ASYNC_REQUESTS
+            Spree::ActiveShipping::CanadaPostPws::SimilarPackagesGrouper.call(
+              packages
             )
-
-            while requests_queue.any?
-              threads = requests_queue.map do |queue_item|
-                weight_and_dimensions = queue_item[0]
-                request = queue_item[1]
-
-                Thread.new do
-                  mutex.synchronize do
-                    responses[weight_and_dimensions] =
-                      find_rate_from_cache(url, request, headers)
-                  end
-                end
-              end
-
-              # Wait for the queue to finish before continue
-              threads.each(&:join)
-
-              requests_queue = requests.pop(
-                ActiveMerchant::Shipping::CanadaPostPWS::MAX_ASYNC_REQUESTS
-              )
-            end
-
-            responses
           end
 
-          def find_rate_from_cache(url, request, headers)
-            cache_key = find_rate_cache_key(url, request, headers)
-
-            Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-              ssl_post(url, request, headers)
-            end
+          def build_rates_requests(origin, destination, grouped_packages, options, package, services)
+            Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsBuilder.call(
+              carrier: self,
+              grouped_packages: grouped_packages,
+              origin: origin,
+              destination: destination,
+              options: options,
+              package: package,
+              services: services
+            )
           end
 
-          def find_rate_cache_key(url, request, headers)
-            request_hash = Digest::MD5.hexdigest(request)
-            headers_hash = Digest::MD5.hexdigest(headers.to_a.join('|'))
-            "#{name}-#{self.class}-#{url}-#{request_hash}-#{headers_hash}-#{I18n.locale}".gsub(' ', '')
+          def peform_rates_requests_async(url, grouped_requests, headers)
+            Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsPerformer.call(
+              carrier: self,
+              url: url,
+              grouped_requests: grouped_requests,
+              headers: headers
+            )
           end
 
           def ungroup_rates_responses(grouped_responses, similar_packages)
-            ungrouped_responses = []
-
-            grouped_responses.each do |weight_and_dimensions, response|
-              similar_packages[weight_and_dimensions].count.times do
-                ungrouped_responses << response
-              end
-            end
-
-            ungrouped_responses
-          end
-
-          def parse_rates_responses(responses, origin, destination)
-            rates = responses.map { |response| parse_rates_response(response, origin, destination) }
-
-            rates_available_to_all_packages = filter_rates_available_to_all_packages(rates)
-            parsed_rates = rates_available_to_all_packages.map do |_, value|
-              rate = value.first
-
-              ActiveMerchant::Shipping::RateEstimate.new(
-                origin,
-                destination,
-                rate.carrier,
-                rate.service_name,
-                service_code: rate.service_code,
-                total_price: value.sum(&:total_price),
-                currency: rate.currency,
-                delivery_range: rate.delivery_range
-              )
-            end
-
-            ActiveMerchant::Shipping::CPPWSRateResponse.new(
-              true,
-              '',
-              {},
-              rates: parsed_rates
+            Spree::ActiveShipping::CanadaPostPws::SimilarResponsesUngrouper.call(
+              grouped_responses: grouped_responses,
+              similar_packages: similar_packages
             )
           end
 
-          def filter_rates_available_to_all_packages(rates)
-            rates
-              .map(&:rates)
-              .flatten
-              .group_by(&:service_name)
-              .select { |_, value| value.count == rates.count }
+          def parse_rates_responses(responses, origin, destination)
+            Spree::ActiveShipping::CanadaPostPws::FindRatesResponsesParser.call(
+              carrier: self,
+              responses: responses,
+              origin: origin,
+              destination: destination
+            )
           end
         end
       end
