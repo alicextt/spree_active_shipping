@@ -34,8 +34,12 @@ module Spree
 
           def valid_credentials?
             location = self.class.default_location
-            find_rates(location, location, (ActiveMerchant::Shipping::Package.new(100,[10,10,10], units: :metric)))
-          rescue ActiveShipping::ResponseError
+            find_rates(
+              location,
+              location,
+              ActiveMerchant::Shipping::Package.new(100, [10,10,10], units: :metric)
+            )
+          rescue ActiveMerchant::Shipping::ResponseError, ::ActiveShipping::ResponseError
             false
           else
             true
