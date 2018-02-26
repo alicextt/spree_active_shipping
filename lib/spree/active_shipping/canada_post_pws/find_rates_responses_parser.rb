@@ -37,7 +37,7 @@ module Spree
           ActiveMerchant::Shipping::RateEstimate.new(
             origin,
             destination,
-            rate.carrier,
+            carrier,
             rate.service_name,
             service_code: rate.service_code,
             total_price: value.sum(&:total_price),
@@ -48,15 +48,17 @@ module Spree
       end
 
       def rates_available_to_all_packages
-        rates
+        parsed_responses
           .map(&:rates)
           .flatten
           .group_by(&:service_name)
-          .select { |_, value| value.count == rates.count }
+          .select { |_, value| value.count == parsed_responses.count }
       end
 
-      def rates
-        @rates ||= responses.map { |response| parse_response(response) }
+      def parsed_responses
+        @parsed_responses ||= responses.map do |response|
+          parse_response(response)
+        end
       end
 
       def parse_response(response)
