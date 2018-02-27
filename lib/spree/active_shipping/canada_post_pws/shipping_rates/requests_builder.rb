@@ -1,22 +1,22 @@
 module Spree
   module ActiveShipping
-    class CanadaPostPws::FindRatesRequestsBuilder
-      def initialize(carrier:, grouped_packages:, origin:, destination:, options:, package:, services:)
+    class CanadaPostPws::ShippingRates::RequestsBuilder
+      def initialize(carrier:, origin:, destination:, grouped_packages:, options:, package:, services:)
         @carrier = carrier
-        @grouped_packages = grouped_packages
         @origin = origin
         @destination = destination
+        @grouped_packages = grouped_packages
         @options = options
         @package = package
         @services = services
       end
 
-      def self.call(carrier:, grouped_packages:, origin:, destination:, options:, package:, services:)
+      def self.call(carrier:, origin:, destination:, grouped_packages:, options:, package:, services:)
         new(
           carrier: carrier,
-          grouped_packages: grouped_packages,
           origin: origin,
           destination: destination,
+          grouped_packages: grouped_packages,
           options: options,
           package: package,
           services: services

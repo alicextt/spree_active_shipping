@@ -1,6 +1,6 @@
 module Spree
   module ActiveShipping
-    class CanadaPostPws::SimilarPackagesGrouper
+    class CanadaPostPws::ShippingRates::GroupPackagesByWeightAndDimension
       def initialize(packages)
         @packages = Array(packages)
       end

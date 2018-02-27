@@ -1,10 +1,10 @@
-RSpec.describe Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsBuilder do
+RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::RequestsBuilder do
   subject do
-    Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsBuilder.new(
+    Spree::ActiveShipping::CanadaPostPws::ShippingRates::RequestsBuilder.new(
       carrier: carrier,
-      grouped_packages: grouped_packages,
       origin: origin,
       destination: destination,
+      grouped_packages: grouped_packages,
       options: options,
       package: package,
       services: services
@@ -12,7 +12,6 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsBuilder do
   end
 
   let(:carrier) { double(:carrier) }
-
   let(:origin) { double(:origin) }
   let(:destination) { double(:destination) }
   let(:options) { double(:options) }

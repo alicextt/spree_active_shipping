@@ -1,19 +1,21 @@
 module Spree
   module ActiveShipping
-    class CanadaPostPws::FindRatesResponsesParser
-      def initialize(carrier:, responses:, origin:, destination:)
+    class CanadaPostPws::ShippingRates::ResponsesParser
+      def initialize(carrier:, origin:, destination:, grouped_responses:, grouped_packages:)
         @carrier = carrier
-        @responses = responses
         @origin = origin
         @destination = destination
+        @grouped_responses = grouped_responses
+        @grouped_packages = grouped_packages
       end
 
-      def self.call(carrier:, responses:, origin:, destination:)
+      def self.call(carrier:, origin:, destination:, grouped_responses:, grouped_packages:)
         new(
           carrier: carrier,
-          responses: responses,
           origin: origin,
-          destination: destination
+          destination: destination,
+          grouped_responses: grouped_responses,
+          grouped_packages: grouped_packages
         ).call
       end
 
@@ -28,7 +30,13 @@ module Spree
 
       private
 
-      attr_reader :carrier, :responses, :origin, :destination
+      attr_reader(
+        :carrier,
+        :origin,
+        :destination,
+        :grouped_responses,
+        :grouped_packages
+      )
 
       def parsed_rates
         parsed_rates = rates_available_to_all_packages.map do |_, value|
@@ -56,13 +64,20 @@ module Spree
       end
 
       def parsed_responses
-        @parsed_responses ||= responses.map do |response|
+        @parsed_responses ||= ungrouped_responses.map do |response|
           parse_response(response)
         end
       end
 
       def parse_response(response)
         carrier.parse_rates_response(response, origin, destination)
+      end
+
+      def ungrouped_responses
+        Spree::ActiveShipping::CanadaPostPws::ShippingRates::AssociateResponsesToPackages.call(
+          grouped_responses: grouped_responses,
+          grouped_packages: grouped_packages
+        )
       end
     end
   end

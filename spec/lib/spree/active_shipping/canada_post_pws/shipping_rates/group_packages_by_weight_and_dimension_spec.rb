@@ -1,6 +1,8 @@
-RSpec.describe Spree::ActiveShipping::CanadaPostPws::SimilarPackagesGrouper do
+RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::GroupPackagesByWeightAndDimension do
   subject do
-    Spree::ActiveShipping::CanadaPostPws::SimilarPackagesGrouper.new(packages)
+    Spree::ActiveShipping::CanadaPostPws::ShippingRates::GroupPackagesByWeightAndDimension.new(
+      packages
+    )
   end
 
   let(:packages) { [package_one, package_two, package_three, package_four] }
@@ -30,7 +32,7 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::SimilarPackagesGrouper do
       }
     end
 
-    it 'should return packages grouped by weight and dimensions' do
+    it 'should return packages grouped by weight and dimension' do
       expect(subject.call).to eq(expected_result)
     end
   end

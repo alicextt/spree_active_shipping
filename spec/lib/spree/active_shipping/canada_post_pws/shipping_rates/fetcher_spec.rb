@@ -1,16 +1,24 @@
-RSpec.describe Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsPerformer do
+RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::Fetcher do
   subject do
-    Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsPerformer.new(
+    Spree::ActiveShipping::CanadaPostPws::ShippingRates::Fetcher.new(
       carrier: carrier,
-      url: url,
       grouped_requests: grouped_requests,
-      headers: headers
+      options: options
     )
   end
 
-  let(:carrier) { double(:carrier, class: 'CanadaPostPws', name: 'Canada Post') }
-  let(:url) { 'some-url' }
+  let(:carrier) do
+    double(
+      :carrier,
+      class: 'CanadaPostPws',
+      name: 'Canada Post',
+      endpoint: 'http://some-endpoint/'
+    )
+  end
+
+  let(:url) { "#{carrier.endpoint}rs/ship/price" }
   let(:headers) { { field: 'value' } }
+  let(:options) { double(:options) }
 
   let(:grouped_requests) do
     [
@@ -30,6 +38,16 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsPerformer 
 
   before do
     Rails.cache.clear
+
+    allow(carrier).to(
+      receive(:headers)
+        .with(
+          options,
+          ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE,
+          ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE
+        )
+        .and_return(headers)
+    )
   end
 
   describe '#call' do

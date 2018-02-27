@@ -50,18 +50,15 @@ module Spree
           # as Canada Post does not allow sending multiple packages when
           # fetching the services we need to make a request for each package.
           def find_rates(origin, destination, line_items = [], options = {}, package = nil, services = [])
-            url = "#{endpoint}rs/ship/price"
-            headers = headers(
-              options,
-              ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE,
-              ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE
+            Spree::ActiveShipping::CanadaPostPws::ShippingRates.call(
+              carrier: self,
+              origin: origin,
+              destination: destination,
+              packages: line_items,
+              options: options,
+              package: package,
+              services: services
             )
-
-            similar_packages = group_packages_by_weight_and_dimensions(line_items)
-            grouped_requests = build_rates_requests(origin, destination, similar_packages, options, package, services)
-            grouped_responses = peform_rates_requests_async(url, grouped_requests, headers)
-            responses = ungroup_rates_responses(grouped_responses, similar_packages)
-            parse_rates_responses(responses, origin, destination)
           rescue ActiveMerchant::ResponseError, ActiveMerchant::Shipping::ResponseError => e
             error_response(e.response.body, ActiveMerchant::Shipping::CPPWSRateResponse)
           end
@@ -91,51 +88,6 @@ module Spree
               el << XmlNode.new('oversized', true) if line_items.any?(&:oversized?)
               el << XmlNode.new('unpackaged', line_items.any?(&:unpackaged?))
             end
-          end
-
-          private
-
-          def group_packages_by_weight_and_dimensions(packages)
-            Spree::ActiveShipping::CanadaPostPws::SimilarPackagesGrouper.call(
-              packages
-            )
-          end
-
-          def build_rates_requests(origin, destination, grouped_packages, options, package, services)
-            Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsBuilder.call(
-              carrier: self,
-              grouped_packages: grouped_packages,
-              origin: origin,
-              destination: destination,
-              options: options,
-              package: package,
-              services: services
-            )
-          end
-
-          def peform_rates_requests_async(url, grouped_requests, headers)
-            Spree::ActiveShipping::CanadaPostPws::FindRatesRequestsPerformer.call(
-              carrier: self,
-              url: url,
-              grouped_requests: grouped_requests,
-              headers: headers
-            )
-          end
-
-          def ungroup_rates_responses(grouped_responses, similar_packages)
-            Spree::ActiveShipping::CanadaPostPws::SimilarResponsesUngrouper.call(
-              grouped_responses: grouped_responses,
-              similar_packages: similar_packages
-            )
-          end
-
-          def parse_rates_responses(responses, origin, destination)
-            Spree::ActiveShipping::CanadaPostPws::FindRatesResponsesParser.call(
-              carrier: self,
-              responses: responses,
-              origin: origin,
-              destination: destination
-            )
           end
         end
       end

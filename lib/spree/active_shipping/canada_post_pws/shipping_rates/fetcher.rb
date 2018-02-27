@@ -1,22 +1,20 @@
 module Spree
   module ActiveShipping
-    class CanadaPostPws::FindRatesRequestsPerformer
+    class CanadaPostPws::ShippingRates::Fetcher
       MAX_ASYNC_REQUESTS = 10
 
-      def initialize(carrier:, url:, grouped_requests:, headers:)
+      def initialize(carrier:, grouped_requests:, options:)
         @carrier = carrier
-        @url = url
         @grouped_requests = grouped_requests
-        @headers = headers
+        @options = options
         @mutex = Mutex.new
       end
 
-      def self.call(carrier:, url:, grouped_requests:, headers:)
+      def self.call(carrier:, grouped_requests:, options:)
         new(
           carrier: carrier,
-          url: url,
           grouped_requests: grouped_requests,
-          headers: headers
+          options: options
         ).call
       end
 
@@ -49,7 +47,7 @@ module Spree
 
       private
 
-      attr_reader :carrier, :url, :grouped_requests, :headers, :mutex
+      attr_reader :carrier, :grouped_requests, :options, :mutex
 
       def find_rate_from_cache(request)
         cache_key = find_rate_cache_key(request)
@@ -63,6 +61,18 @@ module Spree
         request_hash = Digest::MD5.hexdigest(request)
         headers_hash = Digest::MD5.hexdigest(headers.to_a.join('|'))
         "#{carrier.name}-#{carrier.class}-#{url}-#{request_hash}-#{headers_hash}-#{I18n.locale}".gsub(' ', '')
+      end
+
+      def url
+        @url ||= "#{carrier.endpoint}rs/ship/price"
+      end
+
+      def headers
+        @headers ||= carrier.headers(
+          options,
+          ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE,
+          ActiveMerchant::Shipping::CanadaPostPWS::RATE_MIMETYPE
+        )
       end
     end
   end

@@ -1,16 +1,19 @@
-RSpec.describe Spree::ActiveShipping::CanadaPostPws::FindRatesResponsesParser do
+RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::ResponsesParser do
   subject do
-    Spree::ActiveShipping::CanadaPostPws::FindRatesResponsesParser.new(
+    Spree::ActiveShipping::CanadaPostPws::ShippingRates::ResponsesParser.new(
       carrier: carrier,
-      responses: responses,
       origin: origin,
-      destination: destination
+      destination: destination,
+      grouped_responses: grouped_responses,
+      grouped_packages: grouped_packages
     )
   end
 
   let(:carrier) { double(:carrier) }
   let(:origin) { double(:origin) }
   let(:destination) { double(:destination) }
+  let(:grouped_responses) { double(:grouped_responses) }
+  let(:grouped_packages) { double(:grouped_packages) }
 
   let(:responses) { [response_one, response_two, response_three] }
 
@@ -78,6 +81,15 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::FindRatesResponsesParser do
     end
 
     it 'should return parsed responses' do
+      expect(Spree::ActiveShipping::CanadaPostPws::ShippingRates::AssociateResponsesToPackages).to(
+        receive(:call)
+          .with(
+            grouped_responses: grouped_responses,
+            grouped_packages: grouped_packages
+          )
+          .and_return(responses)
+      )
+
       expect(carrier).to(
         receive(:parse_rates_response)
           .with(response_one, origin, destination)

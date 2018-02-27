@@ -1,15 +1,15 @@
 module Spree
   module ActiveShipping
-    class CanadaPostPws::SimilarResponsesUngrouper
-      def initialize(grouped_responses:, similar_packages:)
+    class CanadaPostPws::ShippingRates::AssociateResponsesToPackages
+      def initialize(grouped_responses:, grouped_packages:)
         @grouped_responses = grouped_responses
-        @similar_packages = similar_packages
+        @grouped_packages = grouped_packages
       end
 
-      def self.call(grouped_responses:, similar_packages:)
+      def self.call(grouped_responses:, grouped_packages:)
         new(
           grouped_responses: grouped_responses,
-          similar_packages: similar_packages
+          grouped_packages: grouped_packages
         ).call
       end
 
@@ -17,7 +17,7 @@ module Spree
         ungrouped_responses = []
 
         grouped_responses.each do |weight_and_dimensions, response|
-          similar_packages[weight_and_dimensions].count.times do
+          grouped_packages[weight_and_dimensions].count.times do
             ungrouped_responses << response
           end
         end
@@ -27,7 +27,7 @@ module Spree
 
       private
 
-      attr_reader :grouped_responses, :similar_packages
+      attr_reader :grouped_responses, :grouped_packages
     end
   end
 end

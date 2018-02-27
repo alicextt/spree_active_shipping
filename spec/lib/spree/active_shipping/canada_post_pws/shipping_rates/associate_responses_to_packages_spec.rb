@@ -1,8 +1,8 @@
-RSpec.describe Spree::ActiveShipping::CanadaPostPws::SimilarResponsesUngrouper do
+RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::AssociateResponsesToPackages do
   subject do
-    Spree::ActiveShipping::CanadaPostPws::SimilarResponsesUngrouper.new(
+    Spree::ActiveShipping::CanadaPostPws::ShippingRates::AssociateResponsesToPackages.new(
       grouped_responses: grouped_responses,
-      similar_packages: similar_packages
+      grouped_packages: grouped_packages
     )
   end
 
@@ -16,7 +16,7 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::SimilarResponsesUngrouper d
   let(:response_one) { double(:response_one) }
   let(:response_two) { double(:response_two) }
 
-  let(:similar_packages) do
+  let(:grouped_packages) do
     {
       [10.0, [10.0, 10.0, 10.0]] => [package_one, package_two, package_three],
       [20.0, [20.0, 20.0, 20.0]] => [package_four]
