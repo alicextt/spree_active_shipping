@@ -25,12 +25,12 @@ module Spree
 
         while requests_queue.any?
           threads = requests_queue.map do |queue_item|
-            weight_and_dimensions = queue_item[0]
+            weight_and_dimension = queue_item[0]
             request = queue_item[1]
 
             Thread.new do
               mutex.synchronize do
-                grouped_responses[weight_and_dimensions] =
+                grouped_responses[weight_and_dimension] =
                   find_rate_from_cache(request)
               end
             end

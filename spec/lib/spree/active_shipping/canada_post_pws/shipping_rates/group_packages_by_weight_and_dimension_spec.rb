@@ -8,11 +8,11 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::GroupPackage
   let(:packages) { [package_one, package_two, package_three, package_four] }
 
   let(:package_one) do
-    double(:package_one, kilograms: 10.0, cm: [10.0, 10.0, 10.0])
+    double(:package_one, kilograms: 10.0, cm: [10.0, 11.0, 12.0])
   end
 
   let(:package_two) do
-    double(:package_one, kilograms: 10.0, cm: [10.0, 10.0, 10.0])
+    double(:package_one, kilograms: 10.0, cm: [12.0, 11.0, 10.0])
   end
 
   let(:package_three) do
@@ -26,7 +26,7 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::GroupPackage
   describe '#call' do
     let(:expected_result) do
       {
-        [10.0, [10.0, 10.0, 10.0]] => [package_one, package_two],
+        [10.0, [10.0, 11.0, 12.0]] => [package_one, package_two],
         [10.0, [15.0, 15.0, 15.0]] => [package_three],
         [20.0, [20.0, 20.0, 20.0]] => [package_four]
       }

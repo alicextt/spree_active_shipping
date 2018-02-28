@@ -16,8 +16,8 @@ module Spree
       def call
         ungrouped_responses = []
 
-        grouped_responses.each do |weight_and_dimensions, response|
-          grouped_packages[weight_and_dimensions].count.times do
+        grouped_responses.each do |weight_and_dimension, response|
+          grouped_packages[weight_and_dimension].count.times do
             ungrouped_responses << response
           end
         end

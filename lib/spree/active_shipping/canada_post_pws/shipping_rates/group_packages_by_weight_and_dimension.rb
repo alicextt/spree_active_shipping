@@ -10,7 +10,7 @@ module Spree
       end
 
       def call
-        packages.group_by { |package| [package.kilograms, package.cm] }
+        packages.group_by { |package| [package.kilograms, package.cm.sort] }
       end
 
       private

@@ -24,9 +24,9 @@ module Spree
       end
 
       def call
-        grouped_packages.map do |weight_and_dimensions, packages|
+        grouped_packages.map do |weight_and_dimension, packages|
           request = build_request(packages)
-          [weight_and_dimensions, request]
+          [weight_and_dimension, request]
         end
       end
 

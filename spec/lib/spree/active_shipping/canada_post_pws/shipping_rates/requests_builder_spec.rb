@@ -25,8 +25,8 @@ RSpec.describe Spree::ActiveShipping::CanadaPostPws::ShippingRates::RequestsBuil
     }
   end
 
-  let(:weight_and_dimensions_one) { [10, [10, 10, 10]] }
-  let(:weight_and_dimensions_two) { [20, [20, 20, 20]] }
+  let(:weight_and_dimensions_one) { [10.0, [10.0, 10.0, 10.0]] }
+  let(:weight_and_dimensions_two) { [20.0, [20.0, 20.0, 20.0]] }
 
   let(:package_one) { double(:package_one) }
   let(:package_two) { double(:package_two) }
