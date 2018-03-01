@@ -4,6 +4,10 @@ module Spree
   module Calculator::Shipping
     module CanadaPostPws
       class Base < Spree::Calculator::Shipping::ActiveShipping::Base
+        def self.carrier_name
+          I18n.t('canada_post_pws.carrier_name')
+        end
+
         def carrier
           canada_post_options = {
             endpoint: NemoSpreeCore.configuration.canada_post[:endpoint],

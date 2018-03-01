@@ -89,6 +89,31 @@ module Spree
               el << XmlNode.new('unpackaged', line_items.any?(&:unpackaged?))
             end
           end
+
+          # Override the method to concatenate the carrier name in the service name.
+          def parse_rates_response(response, origin, destination)
+            doc = REXML::Document.new(REXML::Text::unnormalize(response))
+            raise(ActiveMerchant::Shipping::ResponseError, 'No Quotes') unless doc.elements['price-quotes']
+
+            quotes = doc.elements['price-quotes'].elements.collect('price-quote') { |node| node }
+            rates = quotes.map do |node|
+              carrier_name = Spree::Calculator::Shipping::CanadaPostPws::Base.carrier_name
+              service_name  = "#{carrier_name} #{node.get_text('service-name')}"
+              service_code  = node.get_text('service-code').to_s
+              total_price   = node.elements['price-details'].get_text('due').to_s
+              expected_date = expected_date_from_node(node)
+              options = {
+                service_code: service_code,
+                total_price: total_price,
+                currency: 'CAD',
+                delivery_range: [expected_date, expected_date]
+              }
+
+              ActiveMerchant::Shipping::RateEstimate.new(origin, destination, name, service_name, options)
+            end
+
+            ActiveMerchant::Shipping::CPPWSRateResponse.new(true, '', {}, rates: rates)
+          end
         end
       end
     end
