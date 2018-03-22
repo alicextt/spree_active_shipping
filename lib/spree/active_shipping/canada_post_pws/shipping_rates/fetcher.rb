@@ -53,6 +53,10 @@ module Spree
         cache_key = find_rate_cache_key(request)
 
         Rails.cache.fetch(cache_key, expires_in: 1.hour) do
+          # Wait between requests to try not to reach the limit imposed by the Canada Post.
+          # Current limit (in theory): 240 requests per minute.
+          sleep 0.25
+
           carrier.ssl_post(url, request, headers)
         end
       end
