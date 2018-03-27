@@ -1,13 +1,13 @@
 module Spree
   module Calculator::Shipping
-    module CanadaPost
-      class XpresspostInternational < Spree::Calculator::Shipping::CanadaPost::Base
+    module CanadaPostPws
+      class XpresspostUsa < Spree::Calculator::Shipping::CanadaPostPws::Base
         def self.geo_group
           :international
         end
 
         def self.description
-          I18n.t("canada_post.xpresspost_international")
+          I18n.t('canada_post_pws.xpresspost_usa')
         end
       end
     end
