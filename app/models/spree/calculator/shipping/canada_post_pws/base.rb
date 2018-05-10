@@ -15,6 +15,7 @@ module Spree
             contract_id: Spree::ActiveShipping::Config[:canada_post_contract_id],
             api_key: Spree::ActiveShipping::Config[:canada_post_api_key],
             secret: Spree::ActiveShipping::Config[:canada_post_secret],
+            platform_id: NemoSpreeCore.configuration.canada_post[:platform_id],
             language: I18n.locale
           }
 
