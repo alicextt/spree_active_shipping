@@ -9,10 +9,6 @@ module Spree
         def self.service_code
           '54'
         end
-
-        def self.description
-          I18n.t("ups.worldwide_express_plus")
-        end
       end
     end
   end

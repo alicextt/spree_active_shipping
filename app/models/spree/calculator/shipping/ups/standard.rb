@@ -9,10 +9,6 @@ module Spree
         def self.service_code
           '11'
         end
-
-        def self.description
-          I18n.t("ups.standard")
-        end
       end
     end
   end

@@ -9,10 +9,6 @@ module Spree
         def self.service_code
           '03'
         end
-
-        def self.description
-          I18n.t("ups.ground")
-        end
       end
     end
   end
