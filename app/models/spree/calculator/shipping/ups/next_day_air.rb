@@ -9,10 +9,6 @@ module Spree
         def self.service_code
           '01'
         end
-
-        def self.description
-          I18n.t("ups.next_day_air")
-        end
       end
     end
   end

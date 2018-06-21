@@ -9,10 +9,6 @@ module Spree
         def self.service_code
           '65'
         end
-
-        def self.description
-          I18n.t("ups.saver")
-        end
       end
     end
   end

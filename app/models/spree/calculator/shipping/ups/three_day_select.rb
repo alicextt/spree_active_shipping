@@ -9,10 +9,6 @@ module Spree
         def self.service_code
           '12'
         end
-
-        def self.description
-          I18n.t("ups.three_day_select")
-        end
       end
     end
   end

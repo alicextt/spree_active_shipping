@@ -4,6 +4,18 @@ module Spree
   module Calculator::Shipping
     module Ups
       class Base < Spree::Calculator::Shipping::ActiveShipping::Base
+        class << self
+          def description(locale: I18n.locale)
+            I18n.t(translation_key, scope: :ups, locale: locale)
+          end
+
+          protected
+
+          def translation_key
+            self.name.demodulize.underscore.to_sym
+          end
+        end
+
         def carrier
           ActiveMerchant::Shipping::UPS.new(carrier_details)
         end
@@ -12,6 +24,10 @@ module Spree
         # weight limit in ounces http://www.ups.com/content/us/en/resources/prepare/oversize.html
         def max_weight_for_country(country)
           2400    # 150 lbs
+        end
+
+        def rate_result_key
+          self.class.description(locale: :en)
         end
 
         private
